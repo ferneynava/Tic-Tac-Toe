@@ -5,6 +5,8 @@ import { WinnerModal } from './components/WinnerModal'
 import { Board } from './components/Board'
 import { BoardContext } from './components/BoardContext'
 import { useContext} from 'react'
+import { ReactSVG } from 'react-svg'
+
 
 function App() {
   const {resetGame, board, turn, updateBoard, winner } = useContext(BoardContext)
@@ -13,7 +15,7 @@ function App() {
 
     <main className="board">
       <h1>Tic Tac Toe</h1>
-      <button onClick={resetGame} >Reset del juego</button>
+      <button onClick={resetGame}> <ReactSVG src='../public/reload.svg'/></button>
       <section className="game">
         <Board board={board} updateBoard={updateBoard} />
       </section>
