@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { TURNS, winnerCheck } from '../constants'
 import { WINNER_COMBOS } from '../constants'
 
@@ -19,31 +19,7 @@ function BoardProvider ({children}){
     // Null es que no hay ganador, false es que hay empate  
     const [winner, setWinner] = useState(winnerCheck.null) 
 
-        const checkWinnerFrom = (boardToCheck) => {
-            // revisamos todas las combinaciones ganadoras 
-            // para ver si hay un ganador
-            for (const combo of WINNER_COMBOS) {
-            const [a,b,c] = combo
-            if(boardToCheck[a]  && boardToCheck[a] === boardToCheck[b] && boardToCheck[a] === boardToCheck[c]) {
-                return boardToCheck[a]
-            }
-            }
-            return null
-        }
-        
-        const checkEndGame = (boardToCheck) => {
-            return boardToCheck.every((square) => square !== null)
-        }
-
-        const resetGame = () => {
-        setBoard(Array(9).fill(null))
-        setTurn(TURNS.X)
-        setWinner(winnerCheck.null)
-        window.localStorage.removeItem('board')
-        window.localStorage.removeItem('turn')
-        }
-
-        const updateBoard = (index) => {
+    const updateBoard = (index) => {
         // No actualizamos esta posición si ya está ocupada
         if(board[index] || winner) return
         // actualizamos el tablero
@@ -56,14 +32,41 @@ function BoardProvider ({children}){
         // guardar aqui partida 
         window.localStorage.setItem('board', JSON.stringify(newBoard))
         window.localStorage.setItem('turn', newTurn)
-        // Revisamos si hay un ganador
-        const newWinner = checkWinnerFrom(newBoard)
-        if(newWinner) {
-            confetti()
-            setWinner(newWinner)
-        } else if(checkEndGame(newBoard)) {
-            setWinner(winnerCheck.empate) // empate
+    }
+
+    const checkWinnerFrom = (boardToCheck) => {
+        // revisamos todas las combinaciones ganadoras 
+        // para ver si hay un ganador
+        for (const combo of WINNER_COMBOS) {
+            const [a,b,c] = combo
+            if(boardToCheck[a]  && boardToCheck[a] === boardToCheck[b] && boardToCheck[a] === boardToCheck[c]) {
+                return boardToCheck[a]
+            }
         }
+            return null
+    }
+        
+        const checkEndGame = (boardToCheck) => {
+            return boardToCheck.every((square) => square !== null)
+        }
+
+        // Revisamos si hay un ganador
+        useEffect(() => {
+            const newWinner = checkWinnerFrom(board)
+            if(newWinner) {
+                confetti()
+                setWinner(newWinner)
+            } else if(checkEndGame(board)) {
+                setWinner(winnerCheck.empate) // empate
+            }
+        }, [board])
+        
+        const resetGame = () => {
+            setBoard(Array(9).fill(null))
+            setTurn(TURNS.X)
+            setWinner(winnerCheck.null)
+            window.localStorage.removeItem('board')
+            window.localStorage.removeItem('turn')
         }
 
     return (
