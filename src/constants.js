@@ -7,7 +7,7 @@ const winnerCheck = {
     null: null,
     X: 'Ganador X',
     O: 'Ganador O',
-    empate: 'Empate'
+    empate: false,
 }
 
 const WINNER_COMBOS = [
