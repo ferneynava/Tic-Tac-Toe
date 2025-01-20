@@ -15,7 +15,7 @@ function App() {
 
     <main className="board">
       <h1>Tic Tac Toe</h1>
-      <button onClick={resetGame}> <ReactSVG src='../public/reload.svg'/></button>
+      <button onClick={resetGame}> <ReactSVG src='reload.svg'/></button>
       <section className="game">
         <Board board={board} updateBoard={updateBoard} />
       </section>
